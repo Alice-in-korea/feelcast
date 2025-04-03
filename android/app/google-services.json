@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "684764762243",
+    "project_id": "feelcast-14638",
+    "storage_bucket": "feelcast-14638.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684764762243:android:1168c38819d075c7d18bb6",
+        "android_client_info": {
+          "package_name": "com.example.feelcast"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTIpBDDV5itcfEohz1_D2tT9QoRl9QoIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
