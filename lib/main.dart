@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:feelcast/core/router/router.dart';
 import 'package:feelcast/core/config/config.dart';
+import 'package:feelcast/presentation/theme_switcher/theme_switcher.dart';
 import 'package:feelcast/presentation/weather/weather.dart';
 import 'package:feelcast/repository/repository.dart';
 import 'package:feelcast/support/style/style.dart';
@@ -40,16 +41,21 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => LocationCubit(SecureStorageUtils.instance),
           ),
+          BlocProvider(create: (context) => ThemeSwitcherCubit()),
           BlocProvider(
             create: (context) => WeatherCubit(repository: WeatherRepository()),
           ),
         ],
-        child: MaterialApp.router(
-          routerConfig: AppRouter().router,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: ThemeMode.system,
-          debugShowCheckedModeBanner: false,
+        child: BlocBuilder<ThemeSwitcherCubit, ThemeSwitcherState>(
+          builder: (context, state) {
+            return MaterialApp.router(
+              routerConfig: AppRouter().router,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: state.themeMode,
+              debugShowCheckedModeBanner: false,
+            );
+          },
         ),
       ),
     );
