@@ -2,9 +2,10 @@ import 'package:feelcast/presentation/connectivity/connectivity.dart';
 import 'package:feelcast/presentation/location/location.dart';
 import 'package:feelcast/presentation/theme_switcher/theme_switcher.dart';
 import 'package:feelcast/presentation/weather/weather.dart';
-import 'package:feelcast/support/util/context_extension.dart';
+import 'package:feelcast/support/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:workmanager/workmanager.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +18,31 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    final xy = context.read<LocationCubit>().state.xy;
+
+    Workmanager()
+        .registerPeriodicTask(
+          weatherPeriodicTask,
+          weatherPeriodicTask,
+          frequency: Duration(minutes: 15),
+          flexInterval: Duration(minutes: 10),
+          initialDelay: Duration(minutes: 10),
+          tag: 'tag2',
+          inputData: {'x': xy.x, 'y': xy.y},
+          constraints: Constraints(
+            ///인터넷이 연결돼 있어야 작업을 실행
+            networkType: NetworkType.connected,
+
+            ///기기가 유휴 상태일 때만 작업 실행
+            // requiresDeviceIdle: true,
+          ),
+        )
+        .then((value) {
+          LogHelper.logInfo("✅ Task registered: ");
+        })
+        .catchError((e) {
+          LogHelper.logError("❌ Failed to register task: $e");
+        });
   }
 
   @override

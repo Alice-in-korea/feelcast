@@ -67,7 +67,21 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
             ],
           );
         } else if (state is WeatherError) {
-          return Center(child: Text('기온 에러: ${state.message}'));
+          return Center(
+            child: Column(
+              children: [
+                Text('기온 에러', style: MyTextStyle.f16b),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    '기온 에러: ${state.message}',
+                    style: MyTextStyle.f12,
+                  ),
+                ),
+                Text('화면을 아래로 당겨서 새로고침 해보세요.', style: MyTextStyle.f14b),
+              ],
+            ),
+          );
         }
         return const Center(child: Text('날씨 정보를 다시 불러 올께요.'));
       },

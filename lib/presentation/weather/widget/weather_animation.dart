@@ -1,5 +1,6 @@
 import 'package:feelcast/presentation/weather/cubit/cubit.dart';
 import 'package:feelcast/support/constant/asset_path.dart';
+import 'package:feelcast/support/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -27,9 +28,12 @@ class WeatherAnimation extends StatelessWidget {
         if (state is WeatherLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is WeatherLoaded) {
-          return Lottie.asset(
-            getLottieAsset(state.currentSkyData?.fcstValue),
-            repeat: true,
+          return SizedBox(
+            width: context.screenWidth * 0.5,
+            child: Lottie.asset(
+              getLottieAsset(state.currentSkyData?.fcstValue),
+              repeat: true,
+            ),
           );
         } else if (state is WeatherError) {
           return Center(child: Text('하늘 에러: ${state.message}'));

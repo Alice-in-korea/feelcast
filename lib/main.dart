@@ -7,11 +7,12 @@ import 'package:feelcast/presentation/theme_switcher/theme_switcher.dart';
 import 'package:feelcast/presentation/weather/weather.dart';
 import 'package:feelcast/repository/repository.dart';
 import 'package:feelcast/support/style/style.dart';
-import 'package:feelcast/support/util/secure_storage_utils.dart';
+import 'package:feelcast/support/util/util.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:workmanager/workmanager.dart';
 import 'presentation/location/location.dart';
 
 void main() async {
@@ -19,9 +20,13 @@ void main() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
+      /// firebase
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
+
+      /// workmanager
+      Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
 
       runApp(const MainApp());
     },
