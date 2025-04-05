@@ -1,20 +1,26 @@
 import 'package:dio/dio.dart';
-import 'package:feelcast/core/config/config.dart';
+import 'package:feelcast/core/config/environment.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 const int apiTimeOut = 60;
 
 class DioClient {
-  final Dio client = Dio();
+  final Dio client;
 
-  DioClient() {
-    client
-      ..options.baseUrl = Environment.baseUrl
-      ..options.connectTimeout = const Duration(seconds: apiTimeOut)
-      ..options.receiveTimeout = const Duration(seconds: apiTimeOut)
-      ..httpClientAdapter;
+  DioClient() : client = Dio() {
+    _configureDio();
+    _addLogInterceptors();
+  }
 
+  void _configureDio() {
+    client.options
+      ..baseUrl = Environment.publicApiBaseUrl
+      ..connectTimeout = const Duration(seconds: apiTimeOut)
+      ..receiveTimeout = const Duration(seconds: apiTimeOut);
+  }
+
+  void _addLogInterceptors() {
     if (!kReleaseMode) {
       client.interceptors.add(
         PrettyDioLogger(

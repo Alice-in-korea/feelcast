@@ -1,5 +1,7 @@
 class Endpoint {
-  static const signIn = '/user/signin';
-  static const signOut = '/user/signout';
-  static const signUp = '/user/signup';
+  ///초단기실황조회
+  static const getCurrentWeather = 'getUltraSrtNcst';
+
+  ///초단기예보조회
+  static const getUltraShortTermForecast = 'getUltraSrtFcst';
 }

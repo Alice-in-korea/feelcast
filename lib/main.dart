@@ -1,10 +1,16 @@
 import 'dart:async';
 
-import 'package:feelcast/firebase_options.dart';
+import 'package:feelcast/core/router/router.dart';
+import 'package:feelcast/core/config/config.dart';
+import 'package:feelcast/presentation/weather/weather.dart';
+import 'package:feelcast/repository/repository.dart';
+import 'package:feelcast/support/style/style.dart';
+import 'package:feelcast/support/util/secure_storage_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'presentation/location/location.dart';
 
 void main() async {
   runZonedGuarded<Future<void>>(
@@ -27,8 +33,25 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: Center(child: Text('Hello World!'))),
+    return RepositoryProvider(
+      create: (context) => WeatherRepository(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => LocationCubit(SecureStorageUtils.instance),
+          ),
+          BlocProvider(
+            create: (context) => WeatherCubit(repository: WeatherRepository()),
+          ),
+        ],
+        child: MaterialApp.router(
+          routerConfig: AppRouter().router,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.system,
+          debugShowCheckedModeBanner: false,
+        ),
+      ),
     );
   }
 }
