@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:feelcast/core/router/router.dart';
 import 'package:feelcast/core/config/config.dart';
+import 'package:feelcast/presentation/connectivity/connectivity.dart';
 import 'package:feelcast/presentation/theme_switcher/theme_switcher.dart';
 import 'package:feelcast/presentation/weather/weather.dart';
 import 'package:feelcast/repository/repository.dart';
@@ -45,6 +46,7 @@ class MainApp extends StatelessWidget {
           BlocProvider(
             create: (context) => WeatherCubit(repository: WeatherRepository()),
           ),
+          BlocProvider(create: (context) => ConnectivityCubit()),
         ],
         child: BlocBuilder<ThemeSwitcherCubit, ThemeSwitcherState>(
           builder: (context, state) {

@@ -2,6 +2,7 @@ import 'package:feelcast/presentation/connectivity/connectivity.dart';
 import 'package:feelcast/presentation/location/location.dart';
 import 'package:feelcast/presentation/theme_switcher/theme_switcher.dart';
 import 'package:feelcast/presentation/weather/weather.dart';
+import 'package:feelcast/support/util/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,14 +31,16 @@ class _HomePageState extends State<HomePage> {
           leading: ConnectivityWidget(),
           actions: [ThemeSwitchWidget()],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Column(
+        body: RefreshIndicator(
+          onRefresh:
+              () => context.read<WeatherCubit>().fetchWeatherInfos(xy.x, xy.y),
+
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView(
               children: [
-                Spacer(),
+                SizedBox(height: context.screenHeight * 0.15),
                 WeatherDisplay(nx: xy.x, ny: xy.y),
-                Spacer(flex: 3),
               ],
             ),
           ),

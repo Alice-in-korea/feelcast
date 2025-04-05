@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -18,7 +17,6 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
     streamSubscription = connectivity.onConnectivityChanged.listen((
       List<ConnectivityResult> result,
     ) {
-      log('🍏result: $result🍏');
       if (result.contains(ConnectivityResult.none)) {
         emit(const ConnectivityDisconnected());
       } else {
