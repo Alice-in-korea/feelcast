@@ -27,13 +27,9 @@ class WeatherAnimation extends StatelessWidget {
         if (state is WeatherLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is WeatherLoaded) {
-          return SizedBox(
-            height: 50,
-            child: Lottie.asset(
-              getLottieAsset(state.currentSkyData?.fcstValue),
-              fit: BoxFit.contain,
-              repeat: true,
-            ),
+          return Lottie.asset(
+            getLottieAsset(state.currentSkyData?.fcstValue),
+            repeat: true,
           );
         } else if (state is WeatherError) {
           return Center(child: Text('하늘 에러: ${state.message}'));

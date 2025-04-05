@@ -42,8 +42,8 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  WeatherAnimation(),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -52,13 +52,13 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
                         WeatherFormatters.formatTemperature(
                           state.currentTempData?.obsrValue,
                         ),
-                        style: MyTextStyle.f48b,
+                        style: MyTextStyle.f24b,
                       ),
                     ],
                   ),
+                  WeatherAnimation(),
                 ],
               ),
-              SizedBox(width: 10),
               if (state.currentTempData?.baseTime != null)
                 Align(
                   alignment: Alignment.centerRight,
