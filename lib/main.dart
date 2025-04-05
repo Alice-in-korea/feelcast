@@ -25,8 +25,11 @@ void main() async {
         options: DefaultFirebaseOptions.currentPlatform,
       );
 
-      /// workmanager
-      Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+      /// isar
+      await LocalDBIsar.instance.initLocalDB();
+
+      /// workmanager for main isolate
+      await Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
 
       runApp(const MainApp());
     },
@@ -49,7 +52,7 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider(create: (context) => ThemeSwitcherCubit()),
           BlocProvider(
-            create: (context) => WeatherCubit(repository: WeatherRepository()),
+            create: (context) => WeatherCubit(repository: WeatherRepository(), localDB: LocalDBIsar.instance),  
           ),
           BlocProvider(create: (context) => ConnectivityCubit()),
         ],
