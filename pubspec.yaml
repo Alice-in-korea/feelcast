@@ -78,3 +78,18 @@ flutter:
 
   assets:
     - assets/lottie/weather/
+    - assets/image/
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: "assets/image/logo.png"
+  fullscreen: true
+  ios_content_mode: scaleAspectFit
+  ios: true
+  android: true
+  color_android: "#ffffff"
+  image_android: "assets/image/logo.png"
+  android_12:
+    color: "#ffffff"
+    image: "assets/image/logo_square.png"
+  web: false
