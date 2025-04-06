@@ -21,49 +21,58 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
   @override
   void initState() {
     super.initState();
-
-    context.read<WeatherCubit>().fetchWeatherInfos(nx, ny);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<WeatherCubit>().fetchWeather(nx, ny);
+      context.read<ForecastCubit>().fetchUltraShortTermForecast(nx, ny);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WeatherCubit, WeatherState>(
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [WeatherText(), WeatherAnimation()],
+        ),
+
+        WeatherBaseTimeText(),
+      ],
+    );
+  }
+}
+
+class WeatherText extends StatelessWidget {
+  const WeatherText({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<WeatherCubit, WeatherState>(
+      listener: (context, state) {
+        if (state is WeatherError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('화면을 아래로 당겨서 새로고침 해보세요'),
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
+      },
       builder: (context, state) {
         if (state is WeatherLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const SizedBox.shrink();
         } else if (state is WeatherLoaded) {
-          final baseTime = state.currentTempData?.baseTime;
-          final displayTimeText =
-              baseTime != null
-                  ? '${TimeUtil.formatStringToTime(baseTime)}시 기준'
-                  : '';
-
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('지금은', style: MyTextStyle.f12b),
-                      Text(
-                        WeatherFormatters.formatTemperature(
-                          state.currentTempData?.obsrValue,
-                        ),
-                        style: MyTextStyle.f24b,
-                      ),
-                    ],
-                  ),
-                  WeatherAnimation(),
-                ],
-              ),
-              if (state.currentTempData?.baseTime != null)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(displayTimeText, style: MyTextStyle.f12b),
+              Text('지금은', style: MyTextStyle.f12b),
+              Text(
+                WeatherFormatters.formatTemperature(
+                  state.currentTempData?.obsrValue,
                 ),
+                style: MyTextStyle.f24b,
+              ),
             ],
           );
         } else if (state is WeatherError) {
@@ -72,19 +81,51 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
               children: [
                 Text('기온 에러', style: MyTextStyle.f16b),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    '기온 에러: ${state.message}',
-                    style: MyTextStyle.f12,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+
+                  child: Icon(Icons.error, color: AppColors.red),
                 ),
-                Text('화면을 아래로 당겨서 새로고침 해보세요.', style: MyTextStyle.f14b),
               ],
             ),
           );
         }
         return const Center(child: Text('날씨 정보를 다시 불러 올께요.'));
       },
+    );
+  }
+}
+
+class WeatherBaseTimeText extends StatelessWidget {
+  const WeatherBaseTimeText({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      child: BlocBuilder<WeatherCubit, WeatherState>(
+        builder: (context, state) {
+          if (state is WeatherLoading) {
+            return SizedBox.shrink();
+          } else if (state is WeatherLoaded) {
+            final baseTime = state.currentTempData?.baseTime;
+            final displayTimeText =
+                baseTime != null
+                    ? '${TimeUtil.formatStringToTime(baseTime)}시 기준'
+                    : '';
+
+            if (state.currentTempData?.baseTime != null) {
+              return Align(
+                alignment: Alignment.centerRight,
+                child: Text(displayTimeText, style: MyTextStyle.f12b),
+              );
+            }
+
+            return SizedBox.shrink();
+          } else if (state is WeatherError) {
+            return SizedBox.shrink();
+          }
+          return SizedBox.shrink();
+        },
+      ),
     );
   }
 }

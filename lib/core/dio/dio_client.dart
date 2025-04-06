@@ -4,8 +4,6 @@ import 'package:feelcast/core/config/environment.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-const int apiTimeOut = 60;
-
 class DioClient {
   final Dio client;
 
@@ -16,6 +14,8 @@ class DioClient {
   }
 
   void _configureDio() {
+    const int apiTimeOut = 60;
+
     client.options
       ..baseUrl = Environment.publicApiBaseUrl
       ..connectTimeout = const Duration(seconds: apiTimeOut)

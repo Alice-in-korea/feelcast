@@ -35,7 +35,7 @@ class WeatherRepository extends BaseRepository {
 
         /// 200 OK이면서 body가 null이 아닌 경우에만 로컬 DB에 저장
         if (hasDataBody) {
-          /// 기존 데이터 삭제 후 업데이트
+          /// 기존 데이터 삭제
           //TODO 순서 보장 확인하기
           await LocalDBIsar.instance.deleteLocalDBByType(
             WeatherDataType.currentWeather.name,

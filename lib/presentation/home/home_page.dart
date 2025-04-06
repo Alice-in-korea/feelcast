@@ -76,8 +76,18 @@ class _HomePageState extends State<HomePage> {
           actions: [ThemeSwitchWidget()],
         ),
         body: RefreshIndicator(
-          onRefresh:
-              () => context.read<WeatherCubit>().fetchWeatherInfos(xy.x, xy.y),
+          onRefresh: () async {
+            //TODO offline일 경우 에러 처리하기
+
+            await Future.wait([
+              context.read<WeatherCubit>().fetchWeather(xy.x, xy.y),
+              context.read<ForecastCubit>().fetchUltraShortTermForecast(
+                xy.x,
+                xy.y,
+              ),
+            ]);
+            return;
+          },
 
           child: Padding(
             padding: const EdgeInsets.all(16.0),

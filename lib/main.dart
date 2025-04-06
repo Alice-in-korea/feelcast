@@ -52,7 +52,18 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider(create: (context) => ThemeSwitcherCubit()),
           BlocProvider(
-            create: (context) => WeatherCubit(repository: WeatherRepository(), localDB: LocalDBIsar.instance),  
+            create:
+                (context) => WeatherCubit(
+                  repository: WeatherRepository(),
+                  localDB: LocalDBIsar.instance,
+                ),
+          ),
+          BlocProvider(
+            create:
+                (context) => ForecastCubit(
+                  repository: WeatherRepository(),
+                  localDB: LocalDBIsar.instance,
+                ),
           ),
           BlocProvider(create: (context) => ConnectivityCubit()),
         ],

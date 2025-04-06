@@ -1,5 +1,4 @@
-import 'package:feelcast/model/dto/dto.dart';
-import 'package:feelcast/support/enum/weather/weather.dart';
+part of 'weather_cubit.dart';
 
 sealed class WeatherState {}
 
@@ -9,25 +8,13 @@ class WeatherLoading extends WeatherState {}
 
 class WeatherLoaded extends WeatherState {
   final List<Item> currentWeather;
-  final List<Item> ultraShortThermForecast;
 
-  WeatherLoaded({
-    required this.currentWeather,
-    required this.ultraShortThermForecast,
-  });
+  WeatherLoaded({required this.currentWeather});
 
-  Item? get currentTempData => findValue(currentWeather, 'T1H');
-  Item? get currentSkyData => findValue(ultraShortThermForecast, 'SKY');
+  Item? get currentTempData => findTempValue(currentWeather);
 
-  WeatherLoaded copyWith({
-    List<Item>? currentWeather,
-    List<Item>? ultraShortThermForecast,
-  }) {
-    return WeatherLoaded(
-      currentWeather: currentWeather ?? this.currentWeather,
-      ultraShortThermForecast:
-          ultraShortThermForecast ?? this.ultraShortThermForecast,
-    );
+  WeatherLoaded copyWith({List<Item>? currentWeather}) {
+    return WeatherLoaded(currentWeather: currentWeather ?? this.currentWeather);
   }
 }
 
@@ -38,9 +25,9 @@ class WeatherError extends WeatherState {
   WeatherError({required this.code, required this.message});
 }
 
-Item? findValue(List<Item> items, String category) {
+Item? findTempValue(List<Item> items) {
   try {
-    return items.firstWhere((e) => e.category == category);
+    return items.firstWhere((e) => e.category == 'T1H');
   } catch (e) {
     return null;
   }
