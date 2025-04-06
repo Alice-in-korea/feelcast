@@ -112,7 +112,9 @@ void callbackDispatcher() {
         final ny = inputData?['y'];
 
         try {
-          LogHelper.logInfo('weatherPeriodicTask start - nx:$nx, ny:$ny');
+          LogHelper.logInfo(
+            '${TimeUtil.getCurrentTime()} weatherPeriodicTask start - nx:$nx, ny:$ny',
+          );
 
           final responseList = await Future.wait([
             DioClient().client.get(

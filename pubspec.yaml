@@ -22,7 +22,7 @@ dependencies:
 
   dio: ^5.8.0+1
   pretty_dio_logger: ^1.4.0
-  dio_retry_plus: ^2.0.8
+  dio_smart_retry: ^7.0.1
   http_certificate_pinning: ^3.0.1
 
   flutter_bloc: ^9.1.0
