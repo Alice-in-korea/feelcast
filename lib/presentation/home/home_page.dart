@@ -88,15 +88,29 @@ class _HomePageState extends State<HomePage> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            //TODO offline일 경우 에러 처리하기
+            final isOnNetwork =
+                context.read<ConnectivityCubit>().state
+                    is ConnectivityConnected;
 
-            await Future.wait([
-              context.read<WeatherCubit>().fetchWeather(xy.x, xy.y),
-              context.read<ForecastCubit>().fetchUltraShortTermForecast(
-                xy.x,
-                xy.y,
-              ),
-            ]);
+            if (isOnNetwork) {
+              await Future.wait([
+                context.read<WeatherCubit>().fetchWeather(xy.x, xy.y),
+                context.read<ForecastCubit>().fetchUltraShortTermForecast(
+                  xy.x,
+                  xy.y,
+                ),
+              ]);
+
+              return;
+            } else {
+              await Future.wait([
+                context.read<WeatherCubit>().fetchLocalWeather(),
+                context
+                    .read<ForecastCubit>()
+                    .fetchLocalUltraShortTermForecast(),
+              ]);
+            }
+
             return;
           },
 

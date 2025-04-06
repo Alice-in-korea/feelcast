@@ -102,4 +102,41 @@ class ForecastCubit extends Cubit<ForecastState> {
       );
     }
   }
+
+  Future<void> fetchLocalUltraShortTermForecast() async {
+    emit(ForecastLoading());
+
+    try {
+      /// 로컬 DB에서 날씨 정보 가져오기
+      /// 로컬 DB에 저장된 날씨 정보가 없을 경우 빈 리스트 반환
+      final weatherLocalData =
+          await LocalDBIsar.instance.getUltraShortTermForecastLocalData();
+
+      if (weatherLocalData.isNotEmpty) {
+        final Map<String, dynamic> jsonMap = jsonDecode(
+          weatherLocalData.first.jsonData,
+        );
+
+        final parsedWeatherLocalData =
+            WeatherResponseDto.fromJson(jsonMap).response.body!.items.item;
+
+        emit(ForecastLoaded(ultraShortThermForecast: parsedWeatherLocalData));
+        return;
+      } else {
+        emit(
+          ForecastError(
+            code: ApiErrorCode.unknownError,
+            message: '저장된 데이터가 없습니다.',
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        ForecastError(
+          code: ApiErrorCode.unknownError,
+          message: '하늘 정보를 가져오는 데 실패했습니다.',
+        ),
+      );
+    }
+  }
 }

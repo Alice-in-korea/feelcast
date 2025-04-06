@@ -18,6 +18,7 @@ class WeatherCubit extends Cubit<WeatherState> {
 
   Future<void> fetchWeather(int nx, int ny) async {
     emit(WeatherLoading());
+
     try {
       final WeatherResponseDto data = await repository.fetchCurrentWeatherData(
         baseDate: TimeUtil.getTodayDate(),
@@ -73,6 +74,40 @@ class WeatherCubit extends Cubit<WeatherState> {
           ),
         );
       }
+    }
+  }
+
+  Future<void> fetchLocalWeather() async {
+    emit(WeatherLoading());
+
+    try {
+      /// 로컬 DB에 저장된 날씨 정보가 없을 경우 빈 리스트 반환
+      final weatherLocalData =
+          await LocalDBIsar.instance.getCurrentWeatherLocalData();
+
+      if (weatherLocalData.isNotEmpty) {
+        final Map<String, dynamic> jsonMap = jsonDecode(
+          weatherLocalData.first.jsonData,
+        );
+
+        final parsedLocalData =
+            WeatherResponseDto.fromJson(jsonMap).response.body!.items.item;
+        emit(WeatherLoaded(currentWeather: parsedLocalData));
+      } else {
+        emit(
+          WeatherError(
+            code: ApiErrorCode.unknownError,
+            message: '저장된 데이터가 없습니다.',
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        WeatherError(
+          code: ApiErrorCode.unknownError,
+          message: '기온 정보를 가져오는 데 실패했습니다.',
+        ),
+      );
     }
   }
 }
