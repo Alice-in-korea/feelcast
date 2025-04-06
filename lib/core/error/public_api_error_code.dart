@@ -1,5 +1,8 @@
 import 'package:feelcast/support/enum/weather/weather.dart';
 
+const successAndHasDataCode = '00';
+const apiErrorUnknownCode = '99';
+
 ApiErrorCode getApiErrorCode(String code) {
   switch (code) {
     case '00':

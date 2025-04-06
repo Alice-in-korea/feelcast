@@ -14,8 +14,7 @@ abstract class WeatherResponseDto with _$WeatherResponseDto {
 
 @freezed
 abstract class Response with _$Response {
-  const factory Response({required Header header, required Body body}) =
-      _Response;
+  const factory Response({required Header header, Body? body}) = _Response;
 
   factory Response.fromJson(Map<String, dynamic> json) =>
       _$ResponseFromJson(json);

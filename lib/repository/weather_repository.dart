@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:feelcast/core/config/config.dart';
 import 'package:feelcast/core/error/error.dart';
-import 'package:feelcast/model/dto/dto.dart';
+import 'package:feelcast/model/model.dart';
 import 'package:feelcast/repository/repository.dart';
 import 'package:feelcast/support/constant/constant.dart';
 import 'package:feelcast/support/enum/weather/weather.dart';
@@ -26,10 +26,18 @@ class WeatherRepository extends BaseRepository {
       if (response.statusCode == 200) {
         final weatherResponse = WeatherResponseDto.fromJson(response.data);
 
+        final hasDataBody =
+            response.data['response']['header']['resultCode'] ==
+            successAndHasDataCode;
+
+        if (hasDataBody) {
+          //TODO 200 OK이면서 body가 null이 아닌 경우에만 로컬 DB에 저장
+        }
+
         return weatherResponse;
       } else {
         //NOTE 99는 open api에 명시된 기타에러
-        final errorCode = response.data['resultCode'] ?? '99';
+        final errorCode = response.data['resultCode'] ?? apiErrorUnknownCode;
         final apiErrorCode = getApiErrorCode(errorCode);
 
         throw RepositoryException(
@@ -66,9 +74,17 @@ class WeatherRepository extends BaseRepository {
       if (response.statusCode == 200) {
         final weatherResponse = WeatherResponseDto.fromJson(response.data);
 
+        final hasDataBody =
+            response.data['response']['header']['resultCode'] ==
+            successAndHasDataCode;
+
+        if (hasDataBody) {
+          //TODO 200 OK이면서 body가 null이 아닌 경우에만 로컬 DB에 저장
+        }
+
         return weatherResponse;
       } else {
-        final errorCode = response.data['resultCode'] ?? '99';
+        final errorCode = response.data['resultCode'] ?? apiErrorUnknownCode;
         final apiErrorCode = getApiErrorCode(errorCode);
 
         throw RepositoryException(
