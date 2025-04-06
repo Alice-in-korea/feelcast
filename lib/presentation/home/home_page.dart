@@ -24,32 +24,13 @@ class _HomePageState extends State<HomePage> {
 
     _listener = context.read<LocationCubit>().init();
 
-    //TODO test 후 삭제하기
-    Workmanager()
-        .registerOneOffTask(
-          weatherTask,
-          weatherTask,
-          inputData: {'x': xy.x, 'y': xy.y},
-          constraints: Constraints(
-            ///인터넷이 연결돼 있어야 작업을 실행
-            networkType: NetworkType.connected,
-          ),
-        )
-        .then((value) {
-          LogHelper.logInfo("✅ Simple Task registered: ");
-        })
-        .catchError((e) {
-          LogHelper.logError("❌ Failed to register simple task: $e");
-        });
-
     Workmanager()
         .registerPeriodicTask(
           weatherPeriodicTask,
           weatherPeriodicTask,
           frequency: Duration(minutes: 15),
-          //TODO test 후 주석 해제하기
-          // flexInterval: Duration(minutes: 10),
-          // initialDelay: Duration(minutes: 10),
+          flexInterval: Duration(minutes: 10),
+          initialDelay: Duration(minutes: 10),
           inputData: {'x': xy.x, 'y': xy.y},
           constraints: Constraints(
             ///인터넷이 연결돼 있어야 작업을 실행
