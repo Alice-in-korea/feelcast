@@ -21,9 +21,11 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WeatherCubit>().fetchWeather(nx, ny);
-      context.read<ForecastCubit>().fetchUltraShortTermForecast(nx, ny);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Future.wait([
+        context.read<WeatherCubit>().fetchWeather(nx, ny),
+        context.read<ForecastCubit>().fetchUltraShortTermForecast(nx, ny),
+      ]);
     });
   }
 
