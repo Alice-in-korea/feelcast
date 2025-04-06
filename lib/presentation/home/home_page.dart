@@ -15,10 +15,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late final AppLifecycleListener _listener;
+
   @override
   void initState() {
     super.initState();
     final xy = context.read<LocationCubit>().state.xy;
+
+    _listener = context.read<LocationCubit>().init();
 
     //TODO test 후 삭제하기
     Workmanager()
@@ -61,6 +65,13 @@ class _HomePageState extends State<HomePage> {
         .catchError((e) {
           LogHelper.logError("❌❌ Failed to register periodic task: $e");
         });
+  }
+
+  @override
+  void dispose() {
+    _listener.dispose();
+
+    super.dispose();
   }
 
   @override

@@ -3,8 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-const seoul_location_latitude = 37.5665;
-const seoul_location_longitude = 126.9780;
+const seoulLatitude = 37.5665;
+const seoulLongitude = 126.9780;
 
 class SecureStorageUtils {
   SecureStorageUtils._internal();
@@ -15,14 +15,19 @@ class SecureStorageUtils {
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<void> saveLocation(double lat, double lng) async {
-    await _storage.write(key: 'latitude', value: lat.toString());
-    await _storage.write(key: 'longitude', value: lng.toString());
-  }
-
   Future<(double, double)> getLocation() async {
     String? latStr = await _storage.read(key: 'latitude');
     String? lngStr = await _storage.read(key: 'longitude');
+
+    String? expiryStr = await _storage.read(key: 'locationExpiryTime');
+
+    if (expiryStr != null) {
+      final expiry = DateTime.tryParse(expiryStr);
+
+      if (expiry == null || DateTime.now().isAfter(expiry)) {
+        _clearLocation();
+      }
+    }
 
     if (latStr != null && lngStr != null) {
       return (double.parse(latStr), double.parse(lngStr));
@@ -34,22 +39,35 @@ class SecureStorageUtils {
           locationSettings: LocationSettings(),
         );
 
-        saveLocation(position.latitude, position.longitude);
+        _saveLocation(position.latitude, position.longitude);
         return (position.latitude, position.longitude);
       } else if (status.isDenied) {
-        return (seoul_location_latitude, seoul_location_longitude);
+        return (seoulLatitude, seoulLongitude);
       } else if (status.isPermanentlyDenied) {
-        saveLocation(seoul_location_latitude, seoul_location_longitude);
+        _saveLocation(seoulLatitude, seoulLongitude);
 
-        return (seoul_location_latitude, seoul_location_longitude);
+        return (seoulLatitude, seoulLongitude);
       } else {
-        return (seoul_location_latitude, seoul_location_longitude);
+        return (seoulLatitude, seoulLongitude);
       }
     }
   }
 
-  Future<void> clearLocation() async {
+  Future<void> _saveLocation(double lat, double lng) async {
+    const Duration validLocationHour = Duration(hours: 1);
+    final expiryTime = DateTime.now().add(validLocationHour);
+
+    await _storage.write(key: 'latitude', value: lat.toString());
+    await _storage.write(key: 'longitude', value: lng.toString());
+    await _storage.write(
+      key: 'locationExpiryTime',
+      value: expiryTime.toString(),
+    );
+  }
+
+  Future<void> _clearLocation() async {
     await _storage.delete(key: 'latitude');
     await _storage.delete(key: 'longitude');
+    await _storage.delete(key: 'locationExpiryTime');
   }
 }

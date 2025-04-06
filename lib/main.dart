@@ -48,7 +48,9 @@ class MainApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => LocationCubit(SecureStorageUtils.instance),
+            create:
+                (context) =>
+                    LocationCubit(SecureStorageUtils.instance)..initStorage(),
           ),
           BlocProvider(create: (context) => ThemeSwitcherCubit()),
           BlocProvider(

@@ -6,10 +6,8 @@ class LocationState extends Equatable {
 
   const LocationState({required this.latitude, required this.longitude});
 
-  factory LocationState.init() => LocationState(
-    latitude: seoul_location_latitude,
-    longitude: seoul_location_longitude,
-  );
+  factory LocationState.init() =>
+      LocationState(latitude: seoulLatitude, longitude: seoulLongitude);
 
   GridXY get xy => convertLatLonToGrid(latitude, longitude);
 
