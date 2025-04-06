@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:feelcast/core/config/config.dart';
 import 'package:feelcast/core/error/error.dart';
@@ -5,6 +7,7 @@ import 'package:feelcast/model/model.dart';
 import 'package:feelcast/repository/repository.dart';
 import 'package:feelcast/support/constant/constant.dart';
 import 'package:feelcast/support/enum/weather/weather.dart';
+import 'package:feelcast/support/util/util.dart';
 
 const numOfRows = 20;
 const pageNo = 1;
@@ -30,8 +33,21 @@ class WeatherRepository extends BaseRepository {
             response.data['response']['header']['resultCode'] ==
             successAndHasDataCode;
 
+        /// 200 OK이면서 body가 null이 아닌 경우에만 로컬 DB에 저장
         if (hasDataBody) {
-          //TODO 200 OK이면서 body가 null이 아닌 경우에만 로컬 DB에 저장
+          /// 기존 데이터 삭제 후 업데이트
+          //TODO 순서 보장 확인하기
+          await LocalDBIsar.instance.deleteLocalDBByType(
+            WeatherDataType.currentWeather.name,
+          );
+
+          final weatherJson =
+              SavedWeatherData()
+                ..type = WeatherDataType.currentWeather.name
+                ..jsonData = jsonEncode(response.data);
+
+          /// 로컬 데이터 업데이트
+          await LocalDBIsar.instance.updateLocalWeatherData(weatherJson);
         }
 
         return weatherResponse;
@@ -78,8 +94,21 @@ class WeatherRepository extends BaseRepository {
             response.data['response']['header']['resultCode'] ==
             successAndHasDataCode;
 
+        /// 200 OK이면서 body가 null이 아닌 경우에만 로컬 DB에 저장
         if (hasDataBody) {
-          //TODO 200 OK이면서 body가 null이 아닌 경우에만 로컬 DB에 저장
+          /// 기존 데이터 삭제
+          //TODO 순서 보장 확인하기
+          await LocalDBIsar.instance.deleteLocalDBByType(
+            WeatherDataType.ultraShortTermForecast.name,
+          );
+
+          final weatherJson =
+              SavedWeatherData()
+                ..type = WeatherDataType.ultraShortTermForecast.name
+                ..jsonData = jsonEncode(response.data);
+
+          /// 로컬 데이터 업데이트
+          await LocalDBIsar.instance.updateLocalWeatherData(weatherJson);
         }
 
         return weatherResponse;
