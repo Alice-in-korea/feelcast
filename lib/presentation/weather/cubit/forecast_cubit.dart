@@ -36,6 +36,9 @@ class ForecastCubit extends Cubit<ForecastState> {
             );
 
         if (data.response.body == null) {
+          //NOTE 200 OK이지만 body가 null인 경우(NO DATA) - while문 종료
+          hasSkyDataFound = true;
+
           /// 로컬 DB에서 날씨 정보 가져오기
           /// 로컬 DB에 저장된 날씨 정보가 없을 경우 빈 리스트 반환
           final weatherLocalData =
