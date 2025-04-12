@@ -44,7 +44,9 @@ class LocalDBIsar {
 
   /// update
   Future<void> updateLocalWeatherData(SavedWeatherData newWeatherData) async {
-    isar.writeTxnSync(() => isar.savedWeatherDatas.putSync(newWeatherData));
+    await isar.writeTxn(() async {
+      await isar.savedWeatherDatas.put(newWeatherData);
+    });
   }
 
   /// delete
