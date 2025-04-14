@@ -1,6 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-     <!-- Required to fetch data from the internet. -->
-        <uses-permission android:name="android.permission.INTERNET" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:targetSandboxVersion="1">
+    <!-- Required to fetch data from the internet. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- end -->
     <!-- Required to get geo locate data from the internet.  -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -10,7 +11,10 @@
     <application
         android:label="feelcast"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:usesCleartextTraffic="true"
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"
